@@ -1,0 +1,19 @@
+CREATE TABLE arrivals_cache (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    origin TEXT NOT NULL,
+    destination TEXT NOT NULL,
+    json TEXT NOT NULL, -- TODO: Parse values
+    cachedAtMillis INTEGER NOT NULL
+);
+
+getLatest:
+SELECT json, cachedAtMillis
+FROM arrivals_cache
+WHERE origin = ? AND destination = ?
+ORDER BY cachedAtMillis DESC
+LIMIT 1;
+
+insertCache:
+INSERT INTO arrivals_cache(origin, destination, json, cachedAtMillis)
+VALUES (?, ?, ?, ?);
+
