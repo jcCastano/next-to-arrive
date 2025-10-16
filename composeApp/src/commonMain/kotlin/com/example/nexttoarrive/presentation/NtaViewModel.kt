@@ -37,7 +37,10 @@ class NtaViewModel(private val repo: NextToArriveRepository): ViewModel() {
         viewModelScope.launch {
             try {
                 val result = repo.fetch(NextToArriveQuery(origin, destination))
-                reduce { it.copy(isLoading = false, trips = result.trips) }
+                if (result.trips.isEmpty())
+                    reduce { it.copy(isLoading = false, error = "No trips found") }
+                else
+                    reduce { it.copy(isLoading = false, trips = result.trips) }
             } catch (e: Exception) {
                 e.printStackTrace()
                 val lastCached = repo.lastCached(origin, destination)
