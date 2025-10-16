@@ -9,10 +9,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import app.cash.sqldelight.db.SqlDriver
+import com.example.nexttoarrive.api.ApiClient
+import com.example.nexttoarrive.data.NextToArriveRepository
+import com.example.nexttoarrive.db.NtaDatabase
+import com.example.nexttoarrive.db.NtaDatabase.Companion.invoke
+import com.example.nexttoarrive.presentation.NtaViewModel
+import com.example.nexttoarrive.sql.DatabaseDriverFactory
+import com.example.nexttoarrive.ui.NtaScreen
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -21,29 +30,14 @@ import nexttoarrive.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 @Preview
-fun App() {
+fun App(driver: SqlDriver) {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
+        val db = NtaDatabase(driver)
+        val repo = NextToArriveRepository(db, ApiClient())
+        val vm = NtaViewModel(repo)
+
+        Surface(Modifier.fillMaxSize()) {
+            NtaScreen(vm)
         }
     }
 }
