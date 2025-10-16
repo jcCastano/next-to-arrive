@@ -40,7 +40,8 @@ class NtaViewModel(private val repo: NextToArriveRepository): ViewModel() {
                 reduce { it.copy(isLoading = false, trips = result.trips) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                reduce { it.copy(isLoading = false, error = e.message ?: "Unknown error") }
+                val lastCached = repo.lastCached(origin, destination)
+                reduce { it.copy(isLoading = false, trips = lastCached?.trips ?: emptyList(), error = "Connection failed. Using locally cached response.") }
             }
         }
     }
