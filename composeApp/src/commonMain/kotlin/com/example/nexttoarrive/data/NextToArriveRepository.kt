@@ -28,9 +28,20 @@ class NextToArriveRepository(
             res
         }
 
-    suspend fun lastCached(origin: String, destination: String): NextToArriveResponse? =
+    @OptIn(ExperimentalTime::class)
+    suspend fun lastCached(origin: String, destination: String, maxAgeMillis: Long = 1000 * 60 * 5): NextToArriveResponse? =
         withContext(Dispatchers.Default) {
             val row = db.arrivalsQueries.getLatest(origin, destination).executeAsOneOrNull()
             row?.json?.let { json.decodeFromString(NextToArriveResponse.serializer(), it) }
+            if (row != null) {
+                val age = Clock.System.now().toEpochMilliseconds() - row.cachedAtMillis
+                if (age <= maxAgeMillis) {
+                    json.decodeFromString(NextToArriveResponse.serializer(), row.json)
+                } else {
+                    println("Cached data is stale: age=${age / (1000 * 60)} min")
+                    null
+                }
+
+            } else null
         }
 }
