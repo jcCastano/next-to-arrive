@@ -48,6 +48,9 @@ kotlin {
 
             // SqlDelight
             implementation(libs.sqldelight.android)
+
+            // Koin
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -67,6 +70,9 @@ kotlin {
 
             // SqlDelight
             implementation(libs.sqldelight.runtime)
+
+            // Koin
+            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

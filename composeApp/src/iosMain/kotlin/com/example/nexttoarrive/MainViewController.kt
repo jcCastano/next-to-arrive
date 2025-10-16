@@ -6,4 +6,4 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ComposeUIViewController
 import com.example.nexttoarrive.sql.DatabaseDriverFactory
 
-fun MainViewController() = ComposeUIViewController { App(modifier = Modifier.padding(top = 64.dp),DatabaseDriverFactory().createDriver()) }
+fun MainViewController() = ComposeUIViewController { SharedApp.Context(modifier = Modifier.padding(top = 64.dp),DatabaseDriverFactory().createDriver()) }

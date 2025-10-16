@@ -1,6 +1,5 @@
 package com.example.nexttoarrive
 
-import android.app.Application
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,20 +11,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.nexttoarrive.api.ApiClient
-import com.example.nexttoarrive.data.NextToArriveRepository
-import com.example.nexttoarrive.db.NtaDatabase
-import com.example.nexttoarrive.presentation.NtaViewModel
+import com.example.nexttoarrive.init.AppInitializer
 import com.example.nexttoarrive.sql.DatabaseDriverFactory
-import com.example.nexttoarrive.ui.NtaScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        AppInitializer.init(application)
 
         setContent {
-            Surface { App(modifier = Modifier.padding(top = 32.dp), driver = DatabaseDriverFactory(this).createDriver()) }
+            Surface { SharedApp.Context(modifier = Modifier.padding(top = 32.dp), driver = DatabaseDriverFactory(this).createDriver()) }
         }
     }
 }
@@ -33,5 +29,5 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    App(driver = DatabaseDriverFactory(LocalContext.current).createDriver())
+    SharedApp.Context(driver = DatabaseDriverFactory(LocalContext.current).createDriver())
 }
